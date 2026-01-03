@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Contato</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 500px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      textarea {
+        resize: vertical;
+        height: 120px;
+      }
+      button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Contato</h1>
+      <form onsubmit="criarMensagem(event)">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" required />
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="mensagem">Mensagem</label>
+        <textarea id="mensagem" name="mensagem" required></textarea>
+
+        <button type="submit">Enviar</button>
+      </form>
+      <pre id="resultado"></pre>
+    </div>
+
+    <script>
+      const API_URL = "https://withvisionstackservices.onrender.com"; // sua URL real
+      const TOKEN = "Bearer lasventuras"; // sem espaço extra
+
+      async function listarMensagens() {
+        try {
+          const res = await fetch(`${API_URL}/messages`, {
+            headers: { Authorization: TOKEN },
+          });
+          const data = await res.json();
+          document.getElementById("resultado").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      async function criarMensagem(event) {
+        event.preventDefault();
+        const msg = {
+          sender_name: document.getElementById("nome").value,
+          sender_email: document.getElementById("email").value,
+          content: document.getElementById("mensagem").value,
+        };
+        try {
+          const res = await fetch(`${API_URL}/messages`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: TOKEN,
+            },
+            body: JSON.stringify(msg),
+          });
+          const data = await res.json();
+          document.getElementById("resultado").textContent = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    </script>
+  </body>
+</html>
